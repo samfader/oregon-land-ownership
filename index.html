@@ -12,7 +12,8 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Actor';font-size: 16px;
+      font-family: 'Actor';
+      font-size: 16px;
     }
 
     #map {
@@ -32,7 +33,7 @@
 
     #legend {
       background: white;
-      width: 350px;
+      width: 250px;
       border: 1px solid rgba(0, 0, 0, 0.05);
       position: absolute;
       left: 16px;
@@ -77,17 +78,65 @@
       color: rgba(0, 0, 0, 0.5);
       box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
     }
+
+    #menu {
+      background: #fff;
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      right: 10px;
+      border-radius: 3px;
+      width: 120px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+      font-family: 'Actor';
+    }
+
+    #menu a {
+      font-size: 13px;
+      color: #404040;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    #menu a:last-child {
+      border: none;
+    }
+
+    #menu a:hover {
+      background-color: #f8f8f8;
+      color: #404040;
+    }
+
+    #menu a.active {
+      background-color: #3887be;
+      color: #ffffff;
+    }
+
+    #menu a.active:hover {
+      background: #3074a4;
+    }
   </style>
+  <nav id="menu"></nav>
   <div id="map"></div>
   <div id='legend'>
     <ul>
-      <li><span style='background: #c8a7a7'></span>Private</li>
+      <!-- <li><span style='background: #c8a7a7'></span>Private</li>
       <li><span style='background: #e0e0d1'></span>Bureau of Land Management</li>
       <li><span style='background: #caded9'></span>United States Department of Agriculture Forest Service</li>
       <li><span style='background: #d6cddb'></span>Bureau of Indian Affairs</li>
       <li><span style='background: #e0d6c8'></span>Oregon Department of State Lands</li>
       <li><span style='background: #d9e3d9'></span>National Park Service</li>
-      <li><span style='background: #d9dbe3'></span>United States Fish and Wildlife Service</li>
+      <li><span style='background: #d9dbe3'></span>United States Fish and Wildlife Service</li> -->
+      <!-- <li></li> -->
+      <li><a href="https://native-land.ca/" target="blank">Indigenous land data source</a></li>
+      <li><a href="https://koordinates.com/layer/885-oregon-public-land-ownership-2003/"
+          target="blank">Post-colonialization data source</a></li>
     </ul>
   </div>
   <script>
@@ -106,6 +155,49 @@
       zoom: 6.23
     });
 
+    // enumerate ids of the layers
+    var toggleableLayerIds = ['post-colonial', 'indigenous'];
+
+    // set up the corresponding toggle button for each layer
+    for (var i = 0; i < toggleableLayerIds.length; i++) {
+      var id = toggleableLayerIds[i];
+
+      var link = document.createElement('a');
+      link.href = '#';
+      link.className = '';
+      link.textContent = id;
+
+      link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        console.log("clicked layer is", clickedLayer);
+        e.preventDefault();
+        e.stopPropagation();
+
+        var bothLayers = [];
+        if (clickedLayer == 'indigenous'){
+            bothLayers[0] = 'indigenous';
+            bothLayers[1] = 'indigenous-stroke';
+          } else {
+            bothLayers[0] = 'choropleth-fill';
+            bothLayers[1] = 'choropleth-stroke';
+        }
+
+          var visibility = map.getLayoutProperty(bothLayers[0], 'visibility') && map.getLayoutProperty(bothLayers[1], 'visibility');
+
+          // toggle layer visibility by changing the layout object's visibility property
+          if (visibility === 'visible') {
+            map.setLayoutProperty(bothLayers[0], 'visibility', 'none') && map.setLayoutProperty(bothLayers[1], 'visibility', 'none');
+            this.className = '';
+          } else {
+            this.className = 'active';
+            map.setLayoutProperty(bothLayers[0], 'visibility', 'visible') && map.setLayoutProperty(bothLayers[1], 'visibility', 'visible');
+          }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+      };
+
     map.on('load', function () {
       // When a click event occurs on a feature in the states layer, open a popup at the
       // location of the click, with description HTML from its properties.
@@ -123,6 +215,23 @@
 
       // Change it back to a pointer when it leaves.
       map.on('mouseleave', 'choropleth-fill', function () {
+        map.getCanvas().style.cursor = '';
+      });
+
+      map.on('click', 'indigenous', function (e) {
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(e.features[0].properties["Name_2"])
+          .addTo(map);
+      });
+
+      // Change the cursor to a pointer when the mouse is over the states layer.
+      map.on('mouseenter', 'indigenous', function () {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      // Change it back to a pointer when it leaves.
+      map.on('mouseleave', 'indigenous', function () {
         map.getCanvas().style.cursor = '';
       });
     });
