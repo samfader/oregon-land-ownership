@@ -124,8 +124,8 @@
   </style>
   <nav id="menu"></nav>
   <div id="map"></div>
-  <div id='legend'>
-    <ul>
+  <!-- <div id='legend'>
+    <ul> -->
       <!-- <li><span style='background: #c8a7a7'></span>Private</li>
  s     <li><span style='background: #e0e0d1'></span>Bureau of Land Management</li>
       <li><span style='background: #caded9'></span>United States Department of Agriculture Forest Service</li>
@@ -134,8 +134,8 @@
       <li><span style='background: #d9e3d9'></span>National Park Service</li>
       <li><span style='background: #d9dbe3'></span>United States Fish and Wildlife Service</li> -->
       <!-- <li></li> -->
-    </ul>
-  </div>
+    <!-- </ul>
+  </div> -->
   <script>
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2FtZiIsImEiOiJjaWZ3bGhtdjgzMnN1dWdrcnEwZTVieG91In0.DkCY-91coDahKvpH7Z26dw';
     var bounds = [
@@ -153,6 +153,9 @@
       customAttribution: '<a href="https://native-land.ca/" target="blank">Indigenous land data source</a> | <a href="https://koordinates.com/layer/885-oregon-public-land-ownership-2003/" target="blank">Post-colonialization data source</a>',
       zoom: 6.23
     });
+
+    var nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'top-left');
 
     // enumerate ids of the layers
     var toggleableLayerIds = ['indigenous', 'post-colonial'];
