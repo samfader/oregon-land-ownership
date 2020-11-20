@@ -127,16 +127,13 @@
   <div id='legend'>
     <ul>
       <!-- <li><span style='background: #c8a7a7'></span>Private</li>
-      <li><span style='background: #e0e0d1'></span>Bureau of Land Management</li>
+ s     <li><span style='background: #e0e0d1'></span>Bureau of Land Management</li>
       <li><span style='background: #caded9'></span>United States Department of Agriculture Forest Service</li>
       <li><span style='background: #d6cddb'></span>Bureau of Indian Affairs</li>
       <li><span style='background: #e0d6c8'></span>Oregon Department of State Lands</li>
       <li><span style='background: #d9e3d9'></span>National Park Service</li>
       <li><span style='background: #d9dbe3'></span>United States Fish and Wildlife Service</li> -->
       <!-- <li></li> -->
-      <li><a href="https://native-land.ca/" target="blank">Indigenous land data source</a></li>
-      <li><a href="https://koordinates.com/layer/885-oregon-public-land-ownership-2003/"
-          target="blank">Post-colonialization data source</a></li>
     </ul>
   </div>
   <script>
@@ -152,11 +149,13 @@
       center: [-121.667, 44.102],
       minZoom: 6,
       maxBounds: bounds,
+      attributionControl: true,
+      customAttribution: '<a href="https://native-land.ca/" target="blank">Indigenous land data source</a> | <a href="https://koordinates.com/layer/885-oregon-public-land-ownership-2003/" target="blank">Post-colonialization data source</a>',
       zoom: 6.23
     });
 
     // enumerate ids of the layers
-    var toggleableLayerIds = ['post-colonial', 'indigenous'];
+    var toggleableLayerIds = ['indigenous', 'post-colonial'];
 
     // set up the corresponding toggle button for each layer
     for (var i = 0; i < toggleableLayerIds.length; i++) {
